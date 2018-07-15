@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang=>
+  <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+  
+    <link rel="icon" href="">
+  
+    
+  <title>防抖和节流 | Jeremy Zhao 的个人博客</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class='logo' href="/">
+      <span>Jeremy Zhao 的个人博客</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id='post'>
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>防抖和节流</h1>
+          <div class='post-meta'>
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2018/03/25</time>
+            
+            
+              | 
+                  <i class="fa fa-tags" aria-hidden="true"></i>
+                
+               
+  <a href="/tags/#技术" class='tag'>技术</a>
+
+  <a href="/tags/#javascript" class='tag'>javascript</a>
+
+  <a href="/tags/#前端基础" class='tag'>前端基础</a>
+
+
+            
+          </div>
+          <blockquote>
+<p>最近经常遇到“防抖”和“节流”这两个概念。作为前端执行优化中比较常用的手法，今天，我就整理一下这两个概念，算作一个备忘。</p>
+</blockquote>
+<h3 id="先说是什么"><a href="#先说是什么" class="headerlink" title="先说是什么"></a>先说是什么</h3><p>防抖（Debounce）和节流（throttle）都是用来控制同一函数执行频率的技巧，避免极其频繁的调用引发的性能问题(惯用场景，后面再说)，在技巧上两者有一点微妙的区别。</p>
+<h5 id="简单理解"><a href="#简单理解" class="headerlink" title="简单理解"></a>简单理解</h5><ul>
+<li><p>防抖，在同一函数被频繁调用的情况下，根据同一函数两次被调用之间的时间间隔判断是否要执行该函数，当时间间隔大于我们预先的设定值，则认为是没有频繁调用，可以执行该函数，否则不予以执行。或者可以认为是，将第一次和最后一次之间的所有函数调用（过渡频繁）都集中在最后一次统一执行，其他调用执行屏蔽掉。</p>
+</li>
+<li><p>节流，在同一函数被频繁调用的情况下，限制函数周期性的被调用执行，即，每隔一定时间（预先设定）保证调用执行一次，周期内的其他调用执行被屏蔽掉。</p>
+</li>
+</ul>
+<h5 id="举个例子"><a href="#举个例子" class="headerlink" title="举个例子"></a>举个例子</h5><p>如果把电梯从 1 楼 到 20 楼认为是一次函数的执行（需要花费一定时间）每一次进来一个人被认为会触发一次函数调用，那在没有防抖和节流的情况下，应该是每次进来一个人都会触发一次函数调用，然后电梯带着这个人从 1 楼到 20楼，这显然是不高效的。</p>
+<ul>
+<li><p>防抖，如果前后两个人进电梯时间间隔小于或等于 10 秒钟，那等一下后面那个人，依次类推，直到有一个人进电梯的时间比他前面的人晚了 10 秒以上，那么就不等后面那个人，电梯就带着此时里面所有的人上去（不考虑电梯容量），否则会一直等下去。</p>
+</li>
+<li><p>节流，在防抖的情况下考虑，如果不断有人进来，且时间间隔不大于 10 秒，那电梯就一直等着不上去，这样在某些情况下也是不行的。节流则保证，不管怎样，电梯每 8 秒上去一次，周期性的，不再等后面的人了。</p>
+</li>
+</ul>
+<h3 id="再说实现"><a href="#再说实现" class="headerlink" title="再说实现"></a>再说实现</h3><p>防抖和节流本质是控制函数执行的频率，所以，防抖和节流本身作为一个高阶函数，其参数之一一定有一个是待控制的函数fn，返回值也应该是一个函数，就是将待控制函数经过防抖/节流处理之后，再返回。这里用setTimeout来简单实现。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 防抖函数</span></span><br><span class="line"><span class="comment"> * @param  &#123;Function&#125; fn      待控制函数</span></span><br><span class="line"><span class="comment"> * @param  &#123;Number&#125;   delta   预设时间，两次函数调用时间超出 delta 则执行函数调用</span></span><br><span class="line"><span class="comment"> * @param  &#123;Object&#125;   context 自定义执行上下文</span></span><br><span class="line"><span class="comment"> * @return &#123;Function&#125;           返回函数</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">debounce</span>(<span class="params">fn, delta, context</span>)</span>&#123;</span><br><span class="line">	<span class="keyword">var</span> debounceId = <span class="literal">null</span>;</span><br><span class="line">	<span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">		clearTimeout(debounceId);</span><br><span class="line">		<span class="keyword">var</span> args = <span class="built_in">arguments</span>; <span class="comment">//fn 可以传参</span></span><br><span class="line">		debounceId = setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">			<span class="comment">// delta 时间之后调用 fn</span></span><br><span class="line">			<span class="comment">// 如果函数触发时间间隔小于 delta </span></span><br><span class="line">			<span class="comment">// 则上一次的 debounceId 会被clearTimeout，不再调用，重新生成当前 debounceId</span></span><br><span class="line">			fn.apply(context, args);</span><br><span class="line">		&#125;, delta);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 使用demo</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">log</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">"log"</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//鼠标移动就会触发 debounce 函数，但是 debounce 会控制 log 的执行</span></span><br><span class="line"><span class="built_in">window</span>.onmousemove = debounce(log, <span class="number">1000</span>);</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 节流函数</span></span><br><span class="line"><span class="comment"> * @param  &#123;Function&#125; fn      待控制函数</span></span><br><span class="line"><span class="comment"> * @param  &#123;Number&#125;   delta   周期执行的时间间隔，保证频繁触发时，该时间间隔内必执行一次</span></span><br><span class="line"><span class="comment"> * @param  &#123;Object&#125;   context 执行上下文</span></span><br><span class="line"><span class="comment"> * @return &#123;Function&#125;         返回函数</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">throttle</span>(<span class="params">fn, delta, context</span>)</span>&#123;</span><br><span class="line">	<span class="keyword">var</span> safe = <span class="literal">true</span>;</span><br><span class="line">	<span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">		<span class="keyword">var</span> args = <span class="built_in">arguments</span>;</span><br><span class="line">		<span class="keyword">if</span>(safe)&#123;<span class="comment">// safe == true 表示函数调用</span></span><br><span class="line">			fn.apply(context, args);</span><br><span class="line">			safe = <span class="literal">false</span>;<span class="comment">//delta 时间之前不可以执行下一次</span></span><br><span class="line">			setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;<span class="comment">//每次调用执行完方法之后，就设置下次 safe == true的时间为delta之后</span></span><br><span class="line">				safe = <span class="literal">true</span>;</span><br><span class="line">			&#125;, delta);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">throttleLog</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">"throttleLog"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//鼠标移动时间绑定了经过 throttle 处理过的 throttleLog 函数，每次移动就会触发</span></span><br><span class="line"><span class="built_in">window</span>.onmousemove = throttle(throttleLog, <span class="number">1000</span>);</span><br></pre></td></tr></table></figure>
+<h3 id="immediate-函数"><a href="#immediate-函数" class="headerlink" title="immediate 函数"></a>immediate 函数</h3><p>immediate 是 debounce 的一个升级(精确)版本。和 debounce 的区别是，debounce 在 setTimeout 内执行函数，也就是两次函数触发时间间隔 delta 时间之后才执行，而 immediate 则认为是设置当前函数是可执行，然后，经过 delta 时间之后，该可执行有效，则立马执行。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * immediate 函数</span></span><br><span class="line"><span class="comment"> * @param  &#123;Function&#125; fn      待处理函数</span></span><br><span class="line"><span class="comment"> * @param  &#123;Number&#125;   delta   时间间隔</span></span><br><span class="line"><span class="comment"> * @param  &#123;Ojbect&#125;   context 执行上下文</span></span><br><span class="line"><span class="comment"> * @return &#123;Function&#125;         返回函数</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">immediate</span>(<span class="params">fn, delta, context</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> timeoutID = <span class="literal">null</span>;</span><br><span class="line">  <span class="keyword">var</span> safe = <span class="literal">true</span>;</span><br><span class="line"> </span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> args = <span class="built_in">arguments</span>;</span><br><span class="line">    <span class="keyword">if</span> (safe) &#123;<span class="comment">//safe == true 执行函数</span></span><br><span class="line">      fn.call(context, args);</span><br><span class="line">      safe = <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    clearTimeout(timeoutID); <span class="comment">//将 delta 时间间隔内的 safe == true 清除掉，不让函数执行</span></span><br><span class="line">    timeoutID = setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">      safe = <span class="literal">true</span>; <span class="comment">// delta 时间后将 safe 设置为 true 表示可以执行</span></span><br><span class="line">    &#125;, delta);</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">immediateLog</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">"immediateLog"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//鼠标移动时间绑定了经过 immediate 处理过的 immediateLog 函数，每次移动就会触发</span></span><br><span class="line"><span class="built_in">window</span>.onmousemove = immediate(immediateLog, <span class="number">1000</span>);</span><br></pre></td></tr></table></figure>
+<h3 id="惯用场景"><a href="#惯用场景" class="headerlink" title="惯用场景"></a>惯用场景</h3><p>我们知道，JavaScript 是遵循事件驱动的，一些行为(事件)会触发一些响应(回调)，这个被称为事件流，如果行为过快，就会频繁触发响应，如果，回调处理的时间超过了事件触发的间隔事件，因为 JavaScript 事件处理是单线程的，所以就会紊乱，如果涉及到 UI 交互的话，视觉感受就是持续卡顿。<br>因此，防抖和节流技术通常用在事件处理上，比如，resize、mousemove、click、keypress等可能频繁触发的事件上。</p>
+<p>PS: 现代浏览器的帧速率通常为 60fps，就是说 16.7ms 为 1 帧，意味着给我们处理回调响应的时间为 16.7ms，如果超过这个时间过大，则表现为性能不佳，如果此时该回调事件又被触发了多次，都在等待回调，则浏览器就凌乱了，业务逻辑上也有可能出问题。所以，话说回来了，防抖和节流就是控制整个事件被触发的次数的。</p>
+<p>PS2: 节流的requestAnimationFrame实现，参看<a href="http://www.css88.com/archives/6605" target="_blank" rel="noopener">这里</a></p>
+<h3 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h3><ul>
+<li><a href="http://www.css88.com/archives/6589" target="_blank" rel="noopener">http://www.css88.com/archives/6589</a></li>
+<li><a href="http://www.css88.com/archives/6598" target="_blank" rel="noopener">http://www.css88.com/archives/6598</a></li>
+</ul>
+
+        </section>
+    </article>
+    
+        <!-- disqus 评论框 start -->
+        <div class="comment">
+            <div id="disqus_thread" class="disqus-thread">
+              <i>Loading comments box needs to over the wall</i>
+            </div>
+        </div>
+        <!-- disqus 评论框 end -->
+    
+    
+        <!-- livere 评论框 start -->
+        <div class="comment">
+            <div id="lv-container" data-id="city" data-uid="your_livere_uid"></div>
+        </div>
+        <!-- livere 评论框 end -->
+        
+  </div>
+  <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#先说是什么"><span class="toc-number">1.</span> <span class="toc-text">先说是什么</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#简单理解"><span class="toc-number">1.0.1.</span> <span class="toc-text">简单理解</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#举个例子"><span class="toc-number">1.0.2.</span> <span class="toc-text">举个例子</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#再说实现"><span class="toc-number">2.</span> <span class="toc-text">再说实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#immediate-函数"><span class="toc-number">3.</span> <span class="toc-text">immediate 函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#惯用场景"><span class="toc-number">4.</span> <span class="toc-text">惯用场景</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#参考文档"><span class="toc-number">5.</span> <span class="toc-text">参考文档</span></a></li></ol>
+        </div>
+    </div>
+    
+  </aside>
+</main>
+
+<!-- disqus 公共JS代码 -->
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = "your_disqus_shortname";
+  var disqus_identifier = "http://runnerjian.com/2018/03/25/防抖和节流/";
+  var disqus_url = "http://runnerjian.com/2018/03/25/防抖和节流/";
+
+  isAgent(getDisqus)
+
+  // determine user agent in China
+  function isAgent(cb) {
+    var url = '//graph.facebook.com/feed?callback=h';
+    var xhr = new XMLHttpRequest();
+    var called = false;
+    xhr.open('GET', url);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+      called = true;
+      cb(true);
+      }
+    };
+    xhr.send();
+    // timeout 1s, this facebook API is very fast.
+    setTimeout(function() {
+      if (!called) {
+      xhr.abort();
+      cb(false)
+      }
+    }, 1000);
+  }
+
+  function getDisqus(isAgent) {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
+    dsq.async = true
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
+  }
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+<script type="text/javascript">
+  (function(d, s) {
+      var j, e = d.getElementsByTagName(s)[0];
+
+      if (typeof LivereTower === 'function') { return; }
+
+      j = d.createElement(s);
+      j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+      j.async = true;
+
+      e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+</script>
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2018 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+</body>
+</html>

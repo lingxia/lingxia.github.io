@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang=>
+  <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+  
+    <link rel="icon" href="">
+  
+    
+  <title>css实现水平垂直居中 | Jeremy Zhao 的个人博客</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class='logo' href="/">
+      <span>Jeremy Zhao 的个人博客</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id='post'>
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>css实现水平垂直居中</h1>
+          <div class='post-meta'>
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2017/12/31</time>
+            
+            
+              | 
+                  <i class="fa fa-tags" aria-hidden="true"></i>
+                
+               
+  <a href="/tags/#技术" class='tag'>技术</a>
+
+  <a href="/tags/#css" class='tag'>css</a>
+
+
+            
+          </div>
+          <blockquote>
+<p>刚开始接触css就遇到过关于如何使用css实现元素的水平垂直居中的问题，后来反反复复遇到过很多次，每一次遇到这个问题都要查一下，然后问题解决了就解决了，从来没有做过总结，今天就和该问题做一个了断，来看下使用css实现元素的水平垂直居中有几种方式。</p>
+</blockquote>
+<p>既然是居中，那肯定是个相对的概念，所以这里考虑一种最简单的情况：一个父div以及一个子div。父div给定一个名为parent的class，子div给定一个名为child的class，对应的html如下：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"parent"</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"child"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>我们重点关注使得子元素在父元素中能够水平垂直居中的css部分代码，所以给div.parent和div.child分别加上简单的不变的样式，如下：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.parent</span> &#123;</span><br><span class="line">	<span class="attribute">background-color</span>: green; <span class="comment">/*方便观察给父元素加一个背景色*/</span></span><br><span class="line">	<span class="attribute">width</span>: <span class="number">300px</span>; <span class="comment">/*设定父元素的宽度*/</span></span><br><span class="line">	<span class="attribute">height</span>: <span class="number">200px</span>; <span class="comment">/*设定父元素的高度*/</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.child</span> &#123;</span><br><span class="line">	<span class="attribute">background-color</span>: red; <span class="comment">/*方便观察给子元素加一个背景色*/</span></span><br><span class="line">	<span class="attribute">width</span>: <span class="number">100px</span>; <span class="comment">/*设定子元素的宽度*/</span></span><br><span class="line">	<span class="attribute">height</span>: <span class="number">100px</span>; <span class="comment">/*设定子元素的高度*/</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>下面要介绍的几种方式都将得到如下的效果：</p>
+<p><img src="/images/center.png" alt="效果图"></p>
+<h4 id="方法一：使用position-absolute-margin-auto"><a href="#方法一：使用position-absolute-margin-auto" class="headerlink" title="方法一：使用position:absolute + margin:auto"></a>方法一：使用position:absolute + margin:auto</h4><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.parent</span> &#123;</span><br><span class="line">	<span class="attribute">position</span>: relative; </span><br><span class="line">	<span class="comment">/*父元素设置定位是为了让子元素可以使用position:absolue*/</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.child</span> &#123;</span><br><span class="line">	<span class="attribute">position</span>: absolute;</span><br><span class="line">	<span class="attribute">margin</span>: auto;</span><br><span class="line">	<span class="attribute">top</span>: <span class="number">0</span>;</span><br><span class="line">	<span class="attribute">bottom</span>: <span class="number">0</span>;</span><br><span class="line">	<span class="attribute">left</span>: <span class="number">0</span>;</span><br><span class="line">	<span class="attribute">right</span>: <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>大致可以做以下理解：</p>
+<ul>
+<li>正常情况下，margin:auto使得margin-top和margin-bottom都为0，而margin-left和margin-right具有相同的不为0的值</li>
+<li>使用position:absolute，子元素脱离了文档流，文档流中其余部分渲染时，子元素不进行渲染</li>
+<li>将子元素的top,bottom,left和right都设置为0，浏览器为子元素重新分配一个边框，如果子元素没有设置宽高，则子元素将占据父元素所有可用空间</li>
+<li>给子元素设置了宽和高的值，可以防止子元素占据所有父元素的可用空间，同时，浏览器根据宽高值重新计算子元素的margin的值，margin-top和margin-bottom此时也具有相同的不为0的值</li>
+<li>此时给父元素加上padding，表现在子元素上也是重新计算了margin的值，从而一直保持居中</li>
+</ul>
+<h4 id="方法二：使用display-flex"><a href="#方法二：使用display-flex" class="headerlink" title="方法二：使用display:flex"></a>方法二：使用display:flex</h4><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.parent</span> &#123;</span><br><span class="line">	<span class="attribute">display</span>: flex;</span><br><span class="line">	<span class="attribute">align-items</span>: center;</span><br><span class="line">	justify-content: center;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>flex布局很方便的解决了居中问题，尤其是在移动端用起来很方便</li>
+<li>flex布局还有很多其他优秀的地方，在布局方面可谓是大放异彩</li>
+<li>IE8及以下的浏览器不兼容flex布局</li>
+</ul>
+<h4 id="方法三：使用transform-translate"><a href="#方法三：使用transform-translate" class="headerlink" title="方法三：使用transform:translate"></a>方法三：使用transform:translate</h4><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.parent</span> &#123;</span><br><span class="line">	<span class="attribute">position</span>: relative;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.child</span> &#123;</span><br><span class="line">	<span class="attribute">position</span>: absolute;</span><br><span class="line">	<span class="attribute">top</span>: <span class="number">50%</span>;</span><br><span class="line">	<span class="attribute">left</span>: <span class="number">50%</span>;</span><br><span class="line">	<span class="attribute">transform</span>: <span class="built_in">translate</span>(-50%,-50%);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>同样子元素使用绝对定位</li>
+<li>top和left都设置为50%，则子元素的起点(左上角)移动到父元素的中心位置</li>
+<li>对子元素使用translate(-50%,-50%)，表示(向左,向上)移动子元素(子元素宽度/2,子元素高度/2)的距离，这样就可以使得子元素中心位置和父元素中心位置重合，即子元素水平垂直对齐</li>
+<li>该方法不兼容IE8及以下</li>
+</ul>
+<h4 id="方法四：负margin"><a href="#方法四：负margin" class="headerlink" title="方法四：负margin"></a>方法四：负margin</h4><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.parent</span> &#123;</span><br><span class="line">	<span class="attribute">position</span>: relative;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.child</span> &#123;</span><br><span class="line">	<span class="attribute">position</span>: absolute;</span><br><span class="line">    <span class="attribute">top</span>: <span class="number">50%</span>;</span><br><span class="line">    <span class="attribute">left</span>: <span class="number">50%</span>;</span><br><span class="line">    <span class="attribute">margin-top</span>: -<span class="number">50px</span>;</span><br><span class="line">    <span class="attribute">margin-left</span>: -<span class="number">50px</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>同样子元素使用绝对定位</li>
+<li>top和left都设置为50%，则子元素的起点(左上角)移动到父元素的中心位置</li>
+<li>将子元素设置margin-top:-(子元素高度/2);margin-left:-(子元素宽度/2)</li>
+</ul>
+<h4 id="方法五：纯粹的position定位"><a href="#方法五：纯粹的position定位" class="headerlink" title="方法五：纯粹的position定位"></a>方法五：纯粹的position定位</h4><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.parent</span> &#123;</span><br><span class="line">	<span class="attribute">position</span>: relative;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.child</span> &#123;</span><br><span class="line">	<span class="attribute">position</span>: absolute;</span><br><span class="line">   <span class="attribute">top</span>: <span class="number">50px</span>;</span><br><span class="line">   <span class="attribute">left</span>: <span class="number">100px</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>子元素使用绝对定位</li>
+<li>top的值为：(父元素高-子元素高)/2</li>
+<li>left的值为：(父元素宽-子元素宽)/2</li>
+</ul>
+<h4 id="方法六：使用display-table-cell"><a href="#方法六：使用display-table-cell" class="headerlink" title="方法六：使用display:table-cell"></a>方法六：使用display:table-cell</h4><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.parent</span> &#123;</span><br><span class="line">	<span class="attribute">display</span>: table-cell;</span><br><span class="line">	<span class="attribute">text-align</span>: center;</span><br><span class="line">	<span class="attribute">vertical-align</span>: middle;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.child</span> &#123;</span><br><span class="line">	<span class="attribute">display</span>: inline-block;</span><br><span class="line">	<span class="attribute">vertical-align</span>: middle;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>父元素使用了display:table-cell所以不兼容IE6/7</li>
+</ul>
+<blockquote>
+<p>这里就总结这几种方法，其实解决问题的办法还有很多，而且这里只拿最简单的情况做示例，很多情况问题比这种复杂的多，需要具体问题具体分析。</p>
+</blockquote>
+
+        </section>
+    </article>
+    
+        <!-- disqus 评论框 start -->
+        <div class="comment">
+            <div id="disqus_thread" class="disqus-thread">
+              <i>Loading comments box needs to over the wall</i>
+            </div>
+        </div>
+        <!-- disqus 评论框 end -->
+    
+    
+        <!-- livere 评论框 start -->
+        <div class="comment">
+            <div id="lv-container" data-id="city" data-uid="your_livere_uid"></div>
+        </div>
+        <!-- livere 评论框 end -->
+        
+  </div>
+  <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#方法一：使用position-absolute-margin-auto"><span class="toc-number">1.</span> <span class="toc-text">方法一：使用position:absolute + margin:auto</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#方法二：使用display-flex"><span class="toc-number">2.</span> <span class="toc-text">方法二：使用display:flex</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#方法三：使用transform-translate"><span class="toc-number">3.</span> <span class="toc-text">方法三：使用transform:translate</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#方法四：负margin"><span class="toc-number">4.</span> <span class="toc-text">方法四：负margin</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#方法五：纯粹的position定位"><span class="toc-number">5.</span> <span class="toc-text">方法五：纯粹的position定位</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#方法六：使用display-table-cell"><span class="toc-number">6.</span> <span class="toc-text">方法六：使用display:table-cell</span></a></li></ol>
+        </div>
+    </div>
+    
+  </aside>
+</main>
+
+<!-- disqus 公共JS代码 -->
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = "your_disqus_shortname";
+  var disqus_identifier = "http://runnerjian.com/2017/12/31/css实现水平垂直居中/";
+  var disqus_url = "http://runnerjian.com/2017/12/31/css实现水平垂直居中/";
+
+  isAgent(getDisqus)
+
+  // determine user agent in China
+  function isAgent(cb) {
+    var url = '//graph.facebook.com/feed?callback=h';
+    var xhr = new XMLHttpRequest();
+    var called = false;
+    xhr.open('GET', url);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+      called = true;
+      cb(true);
+      }
+    };
+    xhr.send();
+    // timeout 1s, this facebook API is very fast.
+    setTimeout(function() {
+      if (!called) {
+      xhr.abort();
+      cb(false)
+      }
+    }, 1000);
+  }
+
+  function getDisqus(isAgent) {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
+    dsq.async = true
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
+  }
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+<script type="text/javascript">
+  (function(d, s) {
+      var j, e = d.getElementsByTagName(s)[0];
+
+      if (typeof LivereTower === 'function') { return; }
+
+      j = d.createElement(s);
+      j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+      j.async = true;
+
+      e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+</script>
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2018 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+</body>
+</html>

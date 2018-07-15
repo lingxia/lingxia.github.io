@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang=>
+  <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+  
+    <link rel="icon" href="">
+  
+    
+  <title>前端测试初体验小结 | Jeremy Zhao 的个人博客</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class='logo' href="/">
+      <span>Jeremy Zhao 的个人博客</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id='post'>
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>前端测试初体验小结</h1>
+          <div class='post-meta'>
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2018/02/03</time>
+            
+            
+              | 
+                  <i class="fa fa-tags" aria-hidden="true"></i>
+                
+               
+  <a href="/tags/#技术" class='tag'>技术</a>
+
+  <a href="/tags/#javascript" class='tag'>javascript</a>
+
+  <a href="/tags/#单元测试" class='tag'>单元测试</a>
+
+
+            
+          </div>
+          <blockquote>
+<p>第一次接触前端测试。以前写前端代码几乎没有测试，所谓的测试不过是打开浏览器刷新下所写的页面，点一点看有没有报错，有没有达到预想的效果，也就是所谓的黑盒测试。在遇到需要测试所写的函数(单元测试)的时候，也不会去考虑边界，只要能达到当前的需求即可。这次接触到前端测试，可以说是打开了一个新的视野，有了更多的选择性。本文将对自己目前所了解的前端测试做一个简单的总结。</p>
+</blockquote>
+<h3 id="单元测试"><a href="#单元测试" class="headerlink" title="单元测试"></a>单元测试</h3><p>所谓的单元测试，就是对一个函数，类或者模块进行正确性验证。比如，对一个求绝对值的函数abs()进行测试，应该得到以下结果：</p>
+<ul>
+<li><p>分别输入2、2.3、0.23， 分别输出2、2.3、0.23</p>
+</li>
+<li><p>分别输入-2、-2.3、-0.23， 分别输出-2、-2.3、-0.23</p>
+</li>
+<li><p>输入0， 输出0</p>
+</li>
+<li><p>输入的非数字，输出报错，抛出异常</p>
+</li>
+</ul>
+<p>测试完以上测试用例之后，即得到一个相对完整的单元测试。</p>
+<p>在学习单元测试以前的做法就是，写完函数之后，在浏览器的控制台中多次使用abs方法并传递不同的参数，肉眼观察所得到的结果是不是自己期望结果。这种做法的缺陷是显而易见的，如果下次修改了该方法，那么需要再次手动测一下所有的测试用例，费时费力，并不科学。</p>
+<h3 id="NodeJs-的-assert"><a href="#NodeJs-的-assert" class="headerlink" title="NodeJs 的 assert"></a>NodeJs 的 <a href="http://nodejs.cn/api/assert.html" target="_blank" rel="noopener">assert</a></h3><p>测试的一个直观的表达就是”给出各种可能的输入，看看输出是否达到预期”，即将输出和预期进行<i>比较</i>，看看是否满足”输出 <i>达到</i> 预期”，如果满足则测试通过，如果没有满足则测试不通过。</p>
+<p>NodeJs 的 assert 对象提供了丰富的<i>比较方法</i> 来完成对输出和预期的比较，从而完成测试，每一个方法都描述了一种预期，取代了测试人员肉眼观察的过程。其中比较常用的有以下几个：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">测试方法</th>
+<th style="text-align:left">被测对象的输出</th>
+<th style="text-align:left">测试人员的预期</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">.ok(value[, message])</td>
+<td style="text-align:left">value</td>
+<td style="text-align:left">value为true</td>
+</tr>
+<tr>
+<td style="text-align:left">.equal(actual, expected[, message])</td>
+<td style="text-align:left">actual</td>
+<td style="text-align:left">actual和expected相等 ==</td>
+</tr>
+<tr>
+<td style="text-align:left">.strictEqual(actual, expected[, message])</td>
+<td style="text-align:left">actual</td>
+<td style="text-align:left">actual和expected全等 ===</td>
+</tr>
+<tr>
+<td style="text-align:left">.notEqual(actual, expected[, message])</td>
+<td style="text-align:left">actual</td>
+<td style="text-align:left">actual和expected不等 !=</td>
+</tr>
+<tr>
+<td style="text-align:left">.notStrictEqual(actual, expected[, message])</td>
+<td style="text-align:left">actual</td>
+<td style="text-align:left">actual和expected不全等 !==</td>
+</tr>
+<tr>
+<td style="text-align:left">.throws(block[, error][, message])</td>
+<td style="text-align:left">执行block</td>
+<td style="text-align:left">block抛出error,或抛出指定error</td>
+</tr>
+</tbody>
+</table>
+<p>举个栗子：</p>
+<p>对于上述的求绝对值的函数abs()使用assert断言，将下面脚本放在test.js中</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> assert = <span class="built_in">require</span>(<span class="string">'assert'</span>);<span class="comment">//引入assert</span></span><br><span class="line"><span class="keyword">var</span> abs = <span class="built_in">require</span>(<span class="string">'xxx/abs'</span>);<span class="comment">//引入你的abs方法</span></span><br><span class="line"></span><br><span class="line">assert.equal(abs(<span class="number">2</span>),<span class="number">2</span>);</span><br><span class="line">assert.equal(abs(<span class="number">-2</span>),<span class="number">2</span>); </span><br><span class="line">assert.equal(abs(<span class="number">2.3</span>),<span class="number">2.3</span>);</span><br><span class="line">assert.equal(abs(<span class="number">-2.3</span>),<span class="number">2.3</span>);</span><br><span class="line">assert.equal(abs(<span class="number">0.23</span>),<span class="number">0.23</span>);</span><br><span class="line">assert.equal(abs(<span class="number">-0.23</span>),<span class="number">-0.23</span>);</span><br><span class="line">assert.equal(abs(<span class="number">0</span>),<span class="number">0</span>);</span><br><span class="line">assert.notEqual(abs(<span class="number">-2</span>),<span class="number">3</span>);</span><br><span class="line">assert.notEqual(abs(<span class="number">2</span>),<span class="number">3</span>);</span><br><span class="line">assert.throws(abs(<span class="literal">null</span>));</span><br><span class="line">assert.throws(abs(<span class="string">"33"</span>));</span><br><span class="line">assert.throws(abs(&#123;<span class="string">"a"</span>:<span class="number">2</span>&#125;));</span><br></pre></td></tr></table></figure>
+<p>在node环境中执行test.js，如果上述测试用例有一个未通过，则说明该函数就是有问题的，排查问题并修改了方法之后只需要再执行下测试脚本test.js即可，增加了测试效率；如果都测试通过，基本可以保证该方法没有问题。</p>
+<p>node.js 的 assert用法详细见<a href="http://nodejs.cn/api/assert.html" target="_blank" rel="noopener">assert</a>。</p>
+<h3 id="should-js"><a href="#should-js" class="headerlink" title="should.js"></a>should.js</h3><p>should.js 也是一个断言库，和 NodeJs 下的 assert 断言库一个道理。</p>
+<p>那么既然有了 assert 为啥还要用 should.js 呢？很明显的一个原因是，NodeJs 下的 assert 只能在 node 环境中使用，是 node 内置的模块，无法在浏览器环境中使用，所以就有了 should.js，这在后面使用 karma 加载浏览器环境中可以看到，当然 should 两边都可以用；另外，should.js 在功能上比 assert 更丰富，更完善。</p>
+<p>简单的使用 should.js</p>
+<p>should.js 提供了一系列类似 assert 的断言的方法，其中也包含 ok, equal, notEqual等前面提到的 assert 的方法，且功能一样。不过 should.js 的基本的调用方式是:</p>
+<p>“待断言表达式”.should.断言方法(预期结果);</p>
+<p>依旧以 abs() 函数为例，一个简单的断言写法如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">abs(<span class="number">2</span>).should.equal(<span class="number">2</span>);<span class="comment">//就这么简单</span></span><br></pre></td></tr></table></figure>
+<p>值得一提的是，should.js 支持链式调用，一个简单的例子如下:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> should = <span class="built_in">require</span>(<span class="string">'should'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> user = &#123;</span><br><span class="line">    name: <span class="string">'tj'</span>,</span><br><span class="line">    pets: [<span class="string">'tobi'</span>, <span class="string">'loki'</span>, <span class="string">'jane'</span>, <span class="string">'bandit'</span>]</span><br><span class="line">&#125;;</span><br><span class="line">user.pets.should.be.instanceof(<span class="built_in">Array</span>).and.have.lengthOf(<span class="number">4</span>);</span><br></pre></td></tr></table></figure>
+<p>关于should的更多用法参见<a href="http://shouldjs.github.io" target="_blank" rel="noopener">should.js api</a>,以及<a href="https://github.com/shouldjs/should.js" target="_blank" rel="noopener">should.js github</a></p>
+<h3 id="mocha"><a href="#mocha" class="headerlink" title="mocha"></a>mocha</h3><p>中文读音”摩卡”。</p>
+<p>mocha是什么？mocha是测试框架，既能支持浏览器环境，也能支持 node 环境。</p>
+<p>测试框架是干嘛的? 所谓测试框架就是帮我们运行测试用例的工具，并且可以打印一些我们想看到的信息，这样我们专注于写测试用例本身。举一个实际的例子，如果没有测试框架，某个测试用例执行失败，则整个测试都会被终止，后面的测试用例无法执行，而 mocha 则很好的帮助我们解决了这个问题。</p>
+<p>一个mocha的简单用法如下，依旧以 abs 函数为例：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">describe(<span class="string">'绝对值方法'</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  it(<span class="string">'2 的绝对值为 2'</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    abs(<span class="number">2</span>).should.equal(<span class="number">2</span>);</span><br><span class="line">  &#125;);</span><br><span class="line">  </span><br><span class="line"> it(<span class="string">'null 的绝对值应该报错'</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    abs(<span class="literal">null</span>).should.equal(<span class="number">2</span>);<span class="comment">//这里会报错，但是不影响后面的测试用例</span></span><br><span class="line">  &#125;);</span><br><span class="line">  </span><br><span class="line">  it(<span class="string">'-2 的绝对值为 2'</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    abs(<span class="number">-2</span>).should.equal(<span class="number">2</span>);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>如上述代码，每一个 describe 为一个测试集合，包含了一个组相关的测试，它是一个函数，可嵌套；每一个 it 为一个测试用例，表示一个单独的测试，为测试的最小单位，它也是一个函数。describe 和 it 的第一个参数都是描述信息，第二个参数都是实际执行的函数。其中一个测试文件中可以有多个 describe，一个 describe 中可以有多个 it。单个测试用例失败后不会影响到其他的测试用例。</p>
+<p>mocha 中自身不具备断言库，因此需要引用别的断言库，比如 should.js，这个可以在 mocha 的配置文件 mocha.opts 中配置 “–require should”，前提是安装了 should.js</p>
+<p>写完测试文件 test.js 后，可以使用 “mocha test.js” 命令来执行测试文件，完成测试，后面紧跟脚本的路径和文件名可以执行多个测试文件。如果只用 mocha 命令则需要把测试文件放在 /test 目录下，mocha 默认会自动查找 /test 目录最顶层的文件执行测试。</p>
+<ul>
+<li>mocha 命令常用的参数有以下几个：</li>
+</ul>
+<p>–recursive: 会执行 /test 目录下所有层级子目录的测试文件</p>
+<p>–reporter [param]: 指定测试报告格式，默认为 spec，可选为<a href="https://mochajs.org/#reporters" target="_blank" rel="noopener">可选格式</a></p>
+<p>–watch: 检测脚本变化，一有变化就执行测试</p>
+<p>–bail: 只要有一个测试用例没有通过，就停止测试</p>
+<p>–grep [param]: 执行指定名称[param]的测试用例</p>
+<p>–grep [param] –invert: 执行名称不为[param]的测试用例</p>
+<p>可以在 mocha.opts 配置上述参数。</p>
+<ul>
+<li>mocha 的其他优点：</li>
+</ul>
+<p>支持before、after、beforeEach和afterEach等钩子函数，在钩子函数中可以编写初始化代码，在测试前或者测试后执行</p>
+<p>支持异步测试，异步测试执行完后，需要在回调函数中执行 done 方法，且只能执行一次，示例如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">describe(<span class="string">'async'</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line"> it(<span class="string">'获取jQuery.js 并验证'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">done</span>) </span>&#123;</span><br><span class="line">   $.ajax(&#123;</span><br><span class="line">     url:<span class="string">"https://cdn.bootcss.com/jquery/2.2.4/jquery.js"</span>,</span><br><span class="line">     success:<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">       done();<span class="comment">//成功后需要执行 done() 方法</span></span><br><span class="line">     &#125;</span><br><span class="line">  	 &#125;);</span><br><span class="line">&#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>关于 mocha 的更多用法请查看<a href="https://mochajs.org" target="_blank" rel="noopener">官方文档</a></p>
+<h3 id="Karma"><a href="#Karma" class="headerlink" title="Karma"></a>Karma</h3><p>Karma 又是什么？晕了晕了。</p>
+<blockquote>
+<p>A simple tool that allows you to execute JavaScript code in multiple real browsers.</p>
+</blockquote>
+<p><a href="https://github.com/karma-runner/karma" target="_blank" rel="noopener">Karma的github</a>上给出的解释是上面那段话。翻译过来就是：”可以让你的 JavaScript 代码在众多真实浏览器中执行的简单工具”。</p>
+<p>也就是说，Karma 是用来将 js 代码放在浏览器环境中执行的工具，运行 Karma 之后，会调用我们的浏览器环境来执行我们的 js 代码。所以，可以这么理解，Karma 并非全部为了测试而生，它只是刚好满足我们测试浏览器环境的需求而被拿来使用而已。事实上，它的确多用于测试，只是你还可以用它来做测试以外的事情。</p>
+<p>npm install karma 之后我们就可以使用 karma 了。</p>
+<p>karma 最基本的使用是通过<a href="https://github.com/karma-runner/karma/blob/master/docs/config/01-configuration-file.md" target="_blank" rel="noopener">配置文件</a>来完成的，配置文件中不同的配置可以完成不同的功能。使用 karma init 可以帮助生成配置文件。</p>
+<p>在 karma 中使用 mocha 需要安装 karma-mocha 包，配置文件中指定 frameworks: [‘mocha’]。</p>
+<p>对要使用的浏览器，需要安装指定浏览器的 launcher 包。参考 <a href="https://www.npmjs.com/browse/keyword/karma-launcher" target="_blank" rel="noopener">launcher 的官方说明</a>。</p>
+<p>完成配置后，karma start 启动 karma，karma 会自动启动一个 server，默认端口为 9876。如果，singleRun 参数配置 singleRun:true，则表示接入 CI，karma 自动执行一次后并退出;如果 singleRun:false，则 karma 的服务会驻守着，可以在浏览器端通过 <a href="http://0.0.0.0:9876/" target="_blank" rel="noopener">http://0.0.0.0:9876/</a> 或者 <a href="http://localhost:9876/" target="_blank" rel="noopener">http://localhost:9876/</a> 来访问，从而调用浏览器环境，装载 js，完成 js 代码的执行(别忘了，karma 就是帮助我们在调用浏览器端环境来执行 js 代码的)，从而完成测试。</p>
+<p>karma 的另一个强大之处在可以接入持续集成(CI)。</p>
+<p>关于 karma 的更多使用请参考<a href="http://karma-runner.github.io/2.0/index.html" target="_blank" rel="noopener">karma官方文档</a></p>
+<h3 id="Travis-CI"><a href="#Travis-CI" class="headerlink" title="Travis CI"></a>Travis CI</h3><p><a href="https://travis-ci.org" target="_blank" rel="noopener">Travis CI</a> 是 CI(持续集成)的一个解决方案。所谓的持续集成就是将代码频繁的集成到主干，从而能快速的完成测试和部署，是软件开发和发布的一个重要环节。</p>
+<p>我们怎么使用 Travis CI ？</p>
+<p>进入到 Travis CI 的首页，使用 github 账号登录，Travis CI 会自动将你的 github 中公开的 repo 同步到 Travis 下；然后，在 Travis 中的 repo 列表中，把你需要接入的 repo 的”开关”打开即可(具体的操作一遍就知道了，Travis 的首页也有说明，一看就懂)。</p>
+<p>和 Karma 一样，Travis 的使用也强依赖于配置文件 .travis.yml，该配置文件简单配置如下:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">language:</span> <span class="string">node_js</span></span><br><span class="line"><span class="attr">node_js:</span></span><br><span class="line"><span class="bullet">  -</span> <span class="string">"9"</span></span><br><span class="line"><span class="attr">before_script:</span></span><br><span class="line"><span class="bullet">  -</span> <span class="string">npm</span> <span class="string">install</span> <span class="bullet">-g</span> <span class="string">mocha</span></span><br><span class="line"><span class="bullet">  -</span> <span class="string">"export DISPLAY=:99.0"</span></span><br><span class="line"><span class="bullet">  -</span> <span class="string">"sh -e /etc/init.d/xvfb start"</span></span><br><span class="line"><span class="bullet">  -</span> <span class="string">sleep</span> <span class="number">3</span> <span class="comment"># give xvfb some time to start</span></span><br><span class="line"><span class="attr">sudo:</span> <span class="string">required</span></span><br><span class="line"><span class="attr">addons:</span></span><br><span class="line"><span class="attr">  chrome:</span> <span class="string">stable</span></span><br></pre></td></tr></table></figure>
+<p>可以指定编译语言、版本、sudo 权限、浏览器等等各种信息，详细配置参考<a href="https://docs.travis-ci.com" target="_blank" rel="noopener">Travis CI 说明文档</a>。在本地的 git 仓库中添加 .travis.yml 配置文件，配置完毕后，push 到 github 中。Travis 会自动检测到仓库变化，并检测到 .travis.yml 文件的存在，然后从 github 中把代码同步过去，在自己的环境中，根据配置文件的配置信息，下载代码和工具，并自动配置然后完成编译执行，最后输出执行结果。在其 web 端可以实时看到整个过程的 log 信息以及执行结果。</p>
+<p>初次使用 Travis 进行前端测试时可能会遇到以下几个坑:</p>
+<ol>
+<li>.yml文件格式不对。.yml 属于对文件格式要求很严格的文件，因此一点格式错误都会导致 Travis 无法完成预期效果。</li>
+<li>chrome 的沙箱环境的权限问题，在 Travis 执行 karma 并调用 chrome，可以考虑在 karma 的配置文件中添加 –no-sandbox 配置</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">browsers: [<span class="string">'Chrome'</span>, <span class="string">'ChromeWithOutSandbox'</span>],</span><br><span class="line"></span><br><span class="line">customLaunchers:&#123;</span><br><span class="line">  ChromeWithOutSandbox:&#123;</span><br><span class="line">    base: <span class="string">"Chrome"</span>,</span><br><span class="line">    flags: [<span class="string">'--no-sandbox'</span>]</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>并且在 Travis 中赋予权限，<a href="https://docs.travis-ci.com/user/gui-and-headless-browsers/" target="_blank" rel="noopener">请参考</a></p>
+<p>关于 Travis CI 还有很多高级用法等待我们去探究。</p>
+<h3 id="其他解决方案"><a href="#其他解决方案" class="headerlink" title="其他解决方案"></a>其他解决方案</h3><ul>
+<li>断言库</li>
+</ul>
+<p><a href="https://www.npmjs.com/package/chai" target="_blank" rel="noopener">chai.js</a></p>
+<ul>
+<li>测试框架</li>
+</ul>
+<p><a href="https://www.npmjs.com/package/jasmine" target="_blank" rel="noopener">jasmine</a></p>
+<ul>
+<li>持续集成</li>
+</ul>
+<p><a href="https://jenkins.io/" target="_blank" rel="noopener">jenkins</a></p>
+<h3 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h3><ul>
+<li>各大官方文档</li>
+<li><a href="http://www.ruanyifeng.com/blog/2015/12/a-mocha-tutorial-of-examples.html" target="_blank" rel="noopener">阮大神的 mocha 教程</a></li>
+<li><a href="https://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/00147203593334596b366f3fe0b409fbc30ad81a0a91c4a000" target="_blank" rel="noopener">廖大神的 mocha 教程</a></li>
+</ul>
+<blockquote>
+<p>大概粗浅的梳理了各部分的关系和简单用法，高级用法还有待进一步学习。</p>
+</blockquote>
+
+        </section>
+    </article>
+    
+        <!-- disqus 评论框 start -->
+        <div class="comment">
+            <div id="disqus_thread" class="disqus-thread">
+              <i>Loading comments box needs to over the wall</i>
+            </div>
+        </div>
+        <!-- disqus 评论框 end -->
+    
+    
+        <!-- livere 评论框 start -->
+        <div class="comment">
+            <div id="lv-container" data-id="city" data-uid="your_livere_uid"></div>
+        </div>
+        <!-- livere 评论框 end -->
+        
+  </div>
+  <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#单元测试"><span class="toc-number">1.</span> <span class="toc-text">单元测试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#NodeJs-的-assert"><span class="toc-number">2.</span> <span class="toc-text">NodeJs 的 assert</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#should-js"><span class="toc-number">3.</span> <span class="toc-text">should.js</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#mocha"><span class="toc-number">4.</span> <span class="toc-text">mocha</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Karma"><span class="toc-number">5.</span> <span class="toc-text">Karma</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Travis-CI"><span class="toc-number">6.</span> <span class="toc-text">Travis CI</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#其他解决方案"><span class="toc-number">7.</span> <span class="toc-text">其他解决方案</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#参考文档"><span class="toc-number">8.</span> <span class="toc-text">参考文档</span></a></li></ol>
+        </div>
+    </div>
+    
+  </aside>
+</main>
+
+<!-- disqus 公共JS代码 -->
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = "your_disqus_shortname";
+  var disqus_identifier = "http://runnerjian.com/2018/02/03/前端测试初体验小结/";
+  var disqus_url = "http://runnerjian.com/2018/02/03/前端测试初体验小结/";
+
+  isAgent(getDisqus)
+
+  // determine user agent in China
+  function isAgent(cb) {
+    var url = '//graph.facebook.com/feed?callback=h';
+    var xhr = new XMLHttpRequest();
+    var called = false;
+    xhr.open('GET', url);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+      called = true;
+      cb(true);
+      }
+    };
+    xhr.send();
+    // timeout 1s, this facebook API is very fast.
+    setTimeout(function() {
+      if (!called) {
+      xhr.abort();
+      cb(false)
+      }
+    }, 1000);
+  }
+
+  function getDisqus(isAgent) {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
+    dsq.async = true
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
+  }
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+<script type="text/javascript">
+  (function(d, s) {
+      var j, e = d.getElementsByTagName(s)[0];
+
+      if (typeof LivereTower === 'function') { return; }
+
+      j = d.createElement(s);
+      j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+      j.async = true;
+
+      e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+</script>
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2018 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+</body>
+</html>

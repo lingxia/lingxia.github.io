@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang=>
+  <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+  
+    <link rel="icon" href="">
+  
+    
+  <title>javascript DOM编程小结 | Jeremy Zhao 的个人博客</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class='logo' href="/">
+      <span>Jeremy Zhao 的个人博客</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id='post'>
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>javascript DOM编程小结</h1>
+          <div class='post-meta'>
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2018/01/08</time>
+            
+            
+              | 
+                  <i class="fa fa-tags" aria-hidden="true"></i>
+                
+               
+  <a href="/tags/#技术" class='tag'>技术</a>
+
+  <a href="/tags/#javascript" class='tag'>javascript</a>
+
+
+            
+          </div>
+          <blockquote>
+<p>本篇文章是对《JavaScript DOM 编程艺术(第二版)》（<a href="https://item.jd.com/10603153.html" target="_blank" rel="noopener">这本</a>）的笔记式总结。书中涉及的操作 DOM 的方法为常用的核心方法，并不是所有的都介绍了，比较基础简单。作者用一个个生动的例子贯穿了 DOM 的大多数的知识点，还包括浏览器兼容性，网页的可读性，HTML5 以及一些库的简单介绍等。</p>
+</blockquote>
+<h4 id="什么是-DOM"><a href="#什么是-DOM" class="headerlink" title="什么是 DOM"></a>什么是 DOM</h4><p>DOM 即 Document Object Model，文档对象模型的缩写，即是一个文档的对象表示形式。DOM 所包含的信息与文档所包含的信息一致，因此可以使用编程语言来操作 DOM 对象，从而达到操作文档的目的。</p>
+<ul>
+<li>Document</li>
+</ul>
+<p>文档，文档是 DOM 的基石，没有文档一切无从谈起。在 web 中文档通常是 (X)HTML。当浏览器加载一个 web 网页时，web 文档就被转化为 DOM 对象。</p>
+<ul>
+<li>Object</li>
+</ul>
+<p>对象，对象是一种自足的数据集合。JavaScript 中对象可以分为三种类型：用户自定义对象，由程序员自行创建；内建对象，内建在 JavaScript 语言中的对象，如，Array；宿主对象，web 中由浏览器提供的对象(node为node环境)。</p>
+<ul>
+<li>Model</li>
+</ul>
+<p>模型，DOM 把一份文档表示为一棵家谱树，使用 parent, child, sibling 等来表示家族成员的关系，这里的树即为模型。</p>
+<h4 id="节点类型"><a href="#节点类型" class="headerlink" title="节点类型"></a>节点类型</h4><p>元素节点<br>属性节点<br>文本节点</p>
+<h4 id="节点属性"><a href="#节点属性" class="headerlink" title="节点属性"></a>节点属性</h4><ul>
+<li>nodeType 属性</li>
+</ul>
+<p>每个节点都有 nodeType 属性表示节点的类型<br>元素节点的 nodeType 属性值为 1<br>属性节点的 nodeType 属性值为 2<br>文本节点的 nodeType 属性值为 3</p>
+<ul>
+<li>nodeValue 属性</li>
+</ul>
+<p>节点的值。值得注意的是，要通过 nodeValue 属性获取类似于 \&lt;p> 这种元素节点的文本值，得获取其子节点(文本节点)的 nodeValue 值</p>
+<ul>
+<li>parentNode 属性</li>
+</ul>
+<p>获取一个元素的父节点</p>
+<ul>
+<li>childNodes 属性</li>
+</ul>
+<p>获取一个元素的所有子节点，它是一个包含这个元素的全部子节点的数组。只有元素节点才有子节点</p>
+<ul>
+<li>nextSibling 属性</li>
+</ul>
+<p>获取一个元素的下一个兄弟节点，可能是文本节点</p>
+<ul>
+<li>firstChild 和 lastChild 属性</li>
+</ul>
+<p>node.firstChild 等价于 node.childNodes[0]<br>node.lastChild 等价于 node.childNodes[node.childNodes.length-1]</p>
+<ul>
+<li>style 属性</li>
+</ul>
+<p>返回一个对象，对象中包含元素的样式。可以使用 element.style.property 来读取/设置样式(property)的值。<br>当需要引用中间带 “-“ 的 css 属性时，需要用驼峰命名法，如 font-family 就用 fontFamily。<br>style 属性只能返回内嵌的样式，在 css 文件或者 style 标签中的样式都无法返回。</p>
+<h4 id="获取元素节点的主要方式"><a href="#获取元素节点的主要方式" class="headerlink" title="获取元素节点的主要方式"></a>获取元素节点的主要方式</h4><ul>
+<li>getElementById</li>
+</ul>
+<p>document.getElementById(id)，通过 id 获取元素节点，返回一个元素节点的 DOM 对象</p>
+<ul>
+<li>getElementsByTagName</li>
+</ul>
+<p>document.getElementsByTagName(tagName)，通过标签名获取元素节点，返回一个元素节点 DOM 对象的数组。如果使用 “*” 通配符则返回包含该文档所有节点的数组。</p>
+<ul>
+<li>getElementsByClassName</li>
+</ul>
+<p>document.getElementsByClassName(className)，通过类名获取元素节点，返回一个元素节点 DOM 对象的数组。指定多个类名时，只需要使用空格分开即可，并且类名的顺序不重要。</p>
+<h4 id="获取和设置元素节点的属性"><a href="#获取和设置元素节点的属性" class="headerlink" title="获取和设置元素节点的属性"></a>获取和设置元素节点的属性</h4><p>使用上面介绍的方法获取到元素节点对象后，可以使用以下方式获取/设置元素节点的属性值</p>
+<ul>
+<li>getAttribute</li>
+</ul>
+<p>elementObj.getAttribute(attribute)，获取 attribute 属性的属性值</p>
+<ul>
+<li>setAttribute</li>
+</ul>
+<p>elementObj.setAttribute(attribute, value)，将 attribute 属性的属性值设置为 value</p>
+<h4 id="创建和插入节点"><a href="#创建和插入节点" class="headerlink" title="创建和插入节点"></a>创建和插入节点</h4><p>在创建的节点插入文档之前，它还不属于 DOM 节点树的组成部分，此时称为文档碎片。虽然它还不能在浏览器中显示，但是它已经拥有了自己的 DOM 属性。</p>
+<ul>
+<li>createElement</li>
+</ul>
+<p>document.createElement(nodeName)，创建一个新的元素节点</p>
+<ul>
+<li>createTextNode</li>
+</ul>
+<p>document.createTextNode(text)，创建一个新的文本节点</p>
+<ul>
+<li>appendChild</li>
+</ul>
+<p>parent.appendChild(child)，在 parent 元素的末尾插入 child 节点</p>
+<ul>
+<li>insertBefore</li>
+</ul>
+<p>parent.insertBefore(new, target)，在 parent 中，将 new 插入在 target 之前，其中 parent 可以通过 target.parentNode 获取</p>
+<h4 id="DOM-Core-与-HTML-DOM"><a href="#DOM-Core-与-HTML-DOM" class="headerlink" title="DOM Core 与 HTML-DOM"></a>DOM Core 与 HTML-DOM</h4><p>前面介绍的属性和方法都输入 DOM Core 的组成部分，它们并不专属于 JavaScript，支持 DOM 的任何一种程序设计语言都可以使用它们，同时它们还可以处理任何一种标记语言(如，XML)编写出来的文档。<br>在使用 JavaScript 和 DOM 为 HTML 编写脚本时，还有许多属性可以选择，如 onclick 属性，可以用于点击事件绑定，这些都输入 HTML-DOM 的组成部分。很多情况下，HTML-DOM 属性和 DOM Core 可以互相替换，如下几个例子：<br>document.getElementsByTagName(“form”) 等价于 document.forms<br>还有<br>element.getAttribute(“src”) 等价于 element.src<br>以及<br>element.setAttribute(“href”, value) 等价于 element.href = value 等。<br>通常，HTML-Core 代码会更短一些，但是，它们只能用来处理 web 文档</p>
+<h4 id="传统技术"><a href="#传统技术" class="headerlink" title="传统技术"></a>传统技术</h4><ul>
+<li>document.write</li>
+</ul>
+<p>document.write 方法可以方便快捷的将字符串插入文档中，而且能极好的兼容低版本的浏览器，但是其最大的缺点是违背了“行为与表现分离”的原则，且 MIME 类型为 application/xhtml+xml 与 document.write 不兼容。</p>
+<ul>
+<li>innerHTML</li>
+</ul>
+<p>innerHTML 现在已经包含在 HTML5 的规范中，几乎所有的浏览器都支持。它可以用来读写指定元素里的 HTML 内容，同样 innerHTML 也是 HTML 专属的，不兼容 application/xhtml+xml。</p>
+<h4 id="平稳退化与渐进增强"><a href="#平稳退化与渐进增强" class="headerlink" title="平稳退化与渐进增强"></a>平稳退化与渐进增强</h4><ul>
+<li>平稳退化</li>
+</ul>
+<p>如果在网站的访问者在浏览器端禁用了 JavaScript 的时候，依然可以顺利的浏览网页，这就是”平稳退化”，虽然效果可能有所缺失，但是基本功能能够顺利使用。<br>一个例子：使用<br>window.open(url,name,features)<br>方法在一个新的窗口打开一个连接链接。封装一个方法</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">popUp</span>(<span class="params">winURL</span>)</span>&#123;</span><br><span class="line">	<span class="built_in">window</span>.open(winURL,<span class="string">"popup"</span>,<span class="string">"width=320,height=480"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在 \&lt;a> 标签中使用该方法，当点击 a 标签时，会在新窗口上打开该链接。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">onclick</span>=<span class="string">"popUp("</span><span class="attr">http:</span>//<span class="attr">www.runnerjian.com</span>");</span></span><br><span class="line"><span class="tag"><span class="attr">return</span> <span class="attr">false</span>;"&gt;</span>runnerjian<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>那么问题是，当浏览器的 JavaScript 被禁用的时候，该功能就是失效了。平稳退化的解决办法是给标签的 href 属性加一个真实的值。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"http://www.runnerjian.com"</span> <span class="attr">onclick</span>=<span class="string">"popUp(this.href);</span></span></span><br><span class="line"><span class="tag"><span class="string">return false;"</span>&gt;</span>runnerjian<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>这样，尽管不是在新的窗口打开该链接，但是打开链接的功能还是可以实现的。<br>另一个”平稳退化”的理解是，在保证较新版浏览器上良好运行的时候，尽可能保证叫老版本的浏览器依然可以正常浏览网页。</p>
+<ul>
+<li>渐进增强</li>
+</ul>
+<p>“渐进增强”是”平稳退化”退化的反向，一般先保证最基本的功能可以实现，然后在此基础上，使用一些额外的信息层去包裹原始数据，从而使得网页更加人性化，表现出更好的效果。<br>通常按照”渐进增强”原则创建出来的网页几乎都符合”平稳退化”原则。</p>
+<h4 id="HTML5-以及一些库"><a href="#HTML5-以及一些库" class="headerlink" title="HTML5 以及一些库"></a>HTML5 以及一些库</h4><p>书中对这部分没有做详细介绍，所以这里罗列一些相关的关键字。</p>
+<ul>
+<li><a href="http://www.w3.org/TR/html5" target="_blank" rel="noopener">HTML5</a></li>
+</ul>
+<p>\&lt;section>, \&lt;article>, \&lt;header>, \&lt;footer><br>\&lt;canvas>, \&lt;audio>, \&lt;video><br>Geolocation, Storage, Drap-and-Drop, Socket, 多线程等</p>
+<ul>
+<li>一些库</li>
+</ul>
+<p>jQuery, Prototype, YUI, Dojo Toolkit</p>
+<ul>
+<li>选择库的原则</li>
+</ul>
+<p>是否具备所需要的所有功能；<br>功能是否过多，过于庞大，很多不需要的功能;<br>模块化的吗<br>支持情况怎么样？社区，维护人员等;<br>是否有文档;<br>许可是否合适;</p>
+<h4 id="一个好用方法"><a href="#一个好用方法" class="headerlink" title="一个好用方法"></a>一个好用方法</h4><ul>
+<li>addLoadEvent</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">addLoadEvent</span>(<span class="params">func</span>)</span>&#123;</span><br><span class="line">	<span class="keyword">var</span> oldonload = <span class="built_in">window</span>.onload;</span><br><span class="line">	<span class="keyword">if</span>(<span class="keyword">typeof</span> <span class="built_in">window</span>.onload != <span class="string">"function"</span>)&#123;</span><br><span class="line">		<span class="built_in">window</span>.onload = func;</span><br><span class="line">	&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">		<span class="built_in">window</span>.onload = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">			oldonload();</span><br><span class="line">			func();</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>为了给全局添加 onload 回调 func，在文档加载完后可以执行 func，但又不能覆盖之前已经添加的 onload 回调。</p>
+
+        </section>
+    </article>
+    
+        <!-- disqus 评论框 start -->
+        <div class="comment">
+            <div id="disqus_thread" class="disqus-thread">
+              <i>Loading comments box needs to over the wall</i>
+            </div>
+        </div>
+        <!-- disqus 评论框 end -->
+    
+    
+        <!-- livere 评论框 start -->
+        <div class="comment">
+            <div id="lv-container" data-id="city" data-uid="your_livere_uid"></div>
+        </div>
+        <!-- livere 评论框 end -->
+        
+  </div>
+  <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#什么是-DOM"><span class="toc-number">1.</span> <span class="toc-text">什么是 DOM</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#节点类型"><span class="toc-number">2.</span> <span class="toc-text">节点类型</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#节点属性"><span class="toc-number">3.</span> <span class="toc-text">节点属性</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#获取元素节点的主要方式"><span class="toc-number">4.</span> <span class="toc-text">获取元素节点的主要方式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#获取和设置元素节点的属性"><span class="toc-number">5.</span> <span class="toc-text">获取和设置元素节点的属性</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#创建和插入节点"><span class="toc-number">6.</span> <span class="toc-text">创建和插入节点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#DOM-Core-与-HTML-DOM"><span class="toc-number">7.</span> <span class="toc-text">DOM Core 与 HTML-DOM</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#传统技术"><span class="toc-number">8.</span> <span class="toc-text">传统技术</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#平稳退化与渐进增强"><span class="toc-number">9.</span> <span class="toc-text">平稳退化与渐进增强</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#HTML5-以及一些库"><span class="toc-number">10.</span> <span class="toc-text">HTML5 以及一些库</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#一个好用方法"><span class="toc-number">11.</span> <span class="toc-text">一个好用方法</span></a></li></ol>
+        </div>
+    </div>
+    
+  </aside>
+</main>
+
+<!-- disqus 公共JS代码 -->
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = "your_disqus_shortname";
+  var disqus_identifier = "http://runnerjian.com/2018/01/08/javascript DOM编程小结/";
+  var disqus_url = "http://runnerjian.com/2018/01/08/javascript DOM编程小结/";
+
+  isAgent(getDisqus)
+
+  // determine user agent in China
+  function isAgent(cb) {
+    var url = '//graph.facebook.com/feed?callback=h';
+    var xhr = new XMLHttpRequest();
+    var called = false;
+    xhr.open('GET', url);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+      called = true;
+      cb(true);
+      }
+    };
+    xhr.send();
+    // timeout 1s, this facebook API is very fast.
+    setTimeout(function() {
+      if (!called) {
+      xhr.abort();
+      cb(false)
+      }
+    }, 1000);
+  }
+
+  function getDisqus(isAgent) {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
+    dsq.async = true
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
+  }
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+<script type="text/javascript">
+  (function(d, s) {
+      var j, e = d.getElementsByTagName(s)[0];
+
+      if (typeof LivereTower === 'function') { return; }
+
+      j = d.createElement(s);
+      j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+      j.async = true;
+
+      e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+</script>
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2018 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+</body>
+</html>
